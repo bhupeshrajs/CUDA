@@ -2,7 +2,6 @@
 
 __global__ void vector_add(int *a, int *b, int *c)
 {
-    /* insert code to calculate the index properly using blockIdx.x, blockDim.x, threadIdx.x */
 	int index = blockIdx.x * blockDim.x + threadIdx.x;
 	c[index] = a[index] + b[index];
 }
