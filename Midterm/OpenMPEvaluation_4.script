@@ -1,0 +1,14 @@
+#!/bin/sh
+#SBATCH -J OPENMP_4
+#SBATCH -o OPENMP_4.%J.stdout
+#SBATCH -e OPENMP_4.%J.stderr
+#SBATCH -N 1
+#SBATCH --threads-per-core=1
+#SBATCH -p development
+#SBATCH -t 00:10:00
+
+module load openmpi
+cd $HOME/CUDA/Midterm/
+
+echo ===============4 THREADS===================
+./openMP2D 4
