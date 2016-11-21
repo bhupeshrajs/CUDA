@@ -115,7 +115,7 @@ int check(double **A, double **B , int n) {
     return correct;
 }
 
-int main()
+int main(int argc, char* argv[])
 {
     // Initialize the MPI environment
     MPI_Init(NULL, NULL);
@@ -128,6 +128,7 @@ int main()
     
     
     int n = N;
+    int num_threads = atoi(argv[1]);
     
     A = malloc((n+2) * sizeof(double *));
     temp = malloc((n+2) * sizeof(double *));
