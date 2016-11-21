@@ -27,7 +27,3 @@ mpirun -n 13 ./MPI2D
 
 echo ===============4 THREADS===================
 mpirun -n 17 ./MPI2D
-
-
-echo ===============4 THREADS===================
-mpirun -n 33 ./MPI2D
