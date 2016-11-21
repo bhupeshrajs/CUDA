@@ -134,7 +134,9 @@ int main()
     
     serial_A = malloc((n+2) * sizeof(double *));
     serial_temp = malloc((n+2) * sizeof(double *));
-    for (int i = 0 ; i < n+2 ; i++)
+    
+    int i;
+    for (i = 0 ; i < n+2 ; i++)
     {
         A[i] = malloc((n+2) * sizeof(double));
         temp[i] = malloc((n+2) * sizeof(double));    
@@ -349,9 +351,10 @@ int main()
             iter++;
             diff = 0.0;
         
-            for (int i = startRow ; i <= endRow ; i++ )
+            int i,j;
+            for (i = startRow ; i <= endRow ; i++ )
             {
-                for (int j = 1 ; j < n ; j++ )
+                for (j = 1 ; j < n ; j++ )
                 {
                     temp[i][j] = 0.2*(A[i][j] + A[i][j-1] + A[i-1][j] + A[i][j+1] + A[i+1][j]);
                     diff += fabs(temp[i][j] - A[i][j]);
@@ -360,9 +363,9 @@ int main()
             
             MPI_Reduce(&diff,&global_diff,1,MPI_DOUBLE,MPI_SUM,0,MPI_COMM_WORLD);
             
-            for (int i = startRow ; i <= endRow ; i++ )
+            for (i = startRow ; i <= endRow ; i++ )
             {
-                for (int j = 1 ; j < n ; j++ )
+                for (j = 1 ; j < n ; j++ )
                 {
                     A[i][j] = temp[i][j];
                 }
