@@ -3,7 +3,6 @@
 #include <math.h>
 #include <sys/time.h>
 #include <mpi.h>
-#include <omp.h>
 
 #define Tolerance 0.00001
 #define TRUE 1
@@ -135,7 +134,9 @@ int main()
     
     serial_A = malloc((n+2) * sizeof(double *));
     serial_temp = malloc((n+2) * sizeof(double *));
-    for (int i = 0 ; i < n+2 ; i++)
+    
+    int i;
+    for (i = 0 ; i < n+2 ; i++)
     {
         A[i] = malloc((n+2) * sizeof(double));
         temp[i] = malloc((n+2) * sizeof(double));    
@@ -158,7 +159,7 @@ int main()
     double mpi_start_time,mpi_end_time,mpi_time;
     double communication_time = 0.0;
     double communication_start_time,communication_end_time;
-    double global_communication_time;
+    double global_communication_time = 0.0;
     
     
     if( myRank == 0 ) {
@@ -248,8 +249,9 @@ int main()
         printf("\n Serial Computation time = %fs\n", serial_time);
         printf("\n MPI Computation time = %fs\n", mpi_time);
     
-        MPI_Reduce(&global_communication_time,&communication_time,1,MPI_DOUBLE,MPI_SUM,0,MPI_COMM_WORLD);
-        printf("\n MPI Communication time = %fs\n", global_communication_time);
+        MPI_Reduce(&communication_time,&global_communication_time,1,MPI_DOUBLE,MPI_SUM,0,MPI_COMM_WORLD);
+        
+        printf("\n MPI Communication time = %fs\n", global_communication_time/1000000);
         
         
         //print(serial_A,n);
@@ -349,10 +351,11 @@ int main()
             iter++;
             diff = 0.0;
         
-            for (int i = startRow ; i <= endRow ; i++ )
+            int i,j;
+            for (i = startRow ; i <= endRow ; i++ )
             {
                 #pragma omp parallel for reduction(+:diff) num_threads(num_threads)
-                for (int j = 1 ; j < n ; j++ )
+                for (j = 1 ; j < n ; j++ )
                 {
                     temp[i][j] = 0.2*(A[i][j] + A[i][j-1] + A[i-1][j] + A[i][j+1] + A[i+1][j]);
                     diff += fabs(temp[i][j] - A[i][j]);
@@ -361,9 +364,9 @@ int main()
             
             MPI_Reduce(&diff,&global_diff,1,MPI_DOUBLE,MPI_SUM,0,MPI_COMM_WORLD);
             
-            for (int i = startRow ; i <= endRow ; i++ )
+            for (i = startRow ; i <= endRow ; i++ )
             {
-                for (int j = 1 ; j < n ; j++ )
+                for (j = 1 ; j < n ; j++ )
                 {
                     A[i][j] = temp[i][j];
                 }
@@ -398,7 +401,7 @@ int main()
         communication_end_time = usecs();
         communication_time += (communication_end_time - communication_start_time);
             
-        MPI_Reduce(&global_communication_time,&communication_time,1,MPI_DOUBLE,MPI_SUM,0,MPI_COMM_WORLD);
+        MPI_Reduce(&communication_time,&global_communication_time,1,MPI_DOUBLE,MPI_SUM,0,MPI_COMM_WORLD);
         
     }
     
