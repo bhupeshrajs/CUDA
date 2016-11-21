@@ -1,0 +1,13 @@
+#!/bin/sh
+#SBATCH -J MPI_8
+#SBATCH -o MPI_8.%J.stdout
+#SBATCH -e MPI_8.%J.stderr
+#SBATCH -N 1
+#SBATCH --ntasks-per-core=1
+#SBATCH -t 00:10:00
+
+module load openmpi
+cd $HOME/CUDA/Midterm/
+
+echo ===============8 PROCESS===================
+mpirun -n 9 ./MPI2D
