@@ -3,6 +3,7 @@
 #SBATCH -o MPI_16.%J.stdout
 #SBATCH -e MPI_16.%J.stderr
 #SBATCH -N 1
+#SBATCH -p development
 #SBATCH --ntasks-per-core=1
 #SBATCH -t 00:10:00
 
